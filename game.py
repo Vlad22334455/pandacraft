@@ -6,6 +6,7 @@ class Game(ShowBase):
         super().__init__()
 
         self.land = MapManager()
+        self.land.loadLand('land.txt')
 
         base.camLens.setFov(90)
         #self.land = Mapmanager()
