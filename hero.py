@@ -1,3 +1,4 @@
+#Клас hero (героя)
 class Hero:
     def __init__(self, pos, land):
         self.land = land
@@ -5,18 +6,24 @@ class Hero:
         self.cameraOn = True
         self.spectatorMode = True
 
-
+        #Загружаємо та встановлюємо координати героя, розмір
         self.hero = loader.loadModel('smiley')
 
         self.hero.setColor(1, 0.5, 0, 1)
         self.hero.setScale(0.3)
         self.hero.setPos(pos)
+        #__________________________________
         
+        #Загружаємо його на карту (сцену)
         self.hero.reparentTo(render)
+        #__________________
 
+        #Прив'язка камери та включення подій
         self.cameraBind()
         self.acceptEvents()
+        #________________________
 
+    #Прив'язати камеру до гравця
     def cameraBind(self):
         base.disableMouse()
         base.camera.reparentTo(self.hero)
@@ -25,7 +32,9 @@ class Hero:
         base.camera.setH(180)
 
         self.cameraOn = True
+        #________________________________
 
+    #Відв'язати камеру від гравця
     def cameraUnBind(self):
         base.enableMouse()
         base.camera.reparentTo(render)
@@ -34,14 +43,17 @@ class Hero:
         base.mouseInterfaceNode.setPos(-pos[0], -pos[1], -pos[2] - 1)
         
         self.cameraOn = False
+    #_________________________________
 
+    #Сама зміна
     def ChangeNode(self):
         if self.cameraOn:
             self.cameraUnBind()
         else:
             self.cameraBind()
+    #___________________
 
-
+    #Поворот наліво та направо
     def turnLeft(self):
         """
         angle = self.hero.getH()
@@ -52,32 +64,36 @@ class Hero:
         
     def turnRight(self):
         self.hero.setH((self.hero.getH() - 5))
+    #_________________________________________
 
+    #Поворот преред та назад
     def turnUp(self):
         self.hero.setP((self.hero.getP() + 5))
+
         
     def turnDown(self):
         self.hero.setP((self.hero.getP() - 5))
+    #___________________________________
 
-
-
+    # Рухає героя на основі вказаного кута
     def just_move(self,angle):
         pos = self.lookAt(angle)
         self.hero.setPos(pos)
-
+    #___________________________________
     def try_move(self, angle):
         pass
 
-
+        #Перевірка режиму
     def move_to(self, angle):
         if self.spectatorMode:
             self.just_move(angle)
         else:
             self.try_move(angle)
+        #_________________________________
         
     
 
-
+    #Перевірка координат
 
     def lookAt(self, angle):
         x = round(self.hero.getX())
@@ -126,28 +142,35 @@ class Hero:
         elif angle <= 340:
             return(0,-1)
 
+    #_____________________________________________
+
 
         
-
+    #Рух вперед
     def forward(self):
         angle = self.hero.getH() % 360
         self.move_to(angle)
+    #________________________________
 
-
+    #Рух назад
     def backward(self):
         angle = (self.hero.getH()+ 180) % 360
         self.move_to(angle)
+    #_____________________________________________
 
+    #Рух наліво
     def left(self):
         angle = (self.hero.getH()+ 90) % 360
         self.move_to(angle)
-
+    #__________________________________
+    #Рух направо
     def right(self):
         angle = (self.hero.getH()+ 270) % 360
         self.move_to(angle)
+    #__________________________________
     
 
-
+    #Підключення подій
     def acceptEvents(self):
         base.accept(change_mode_key, self.ChangeNode)
 
@@ -176,8 +199,10 @@ class Hero:
         base.accept(rightward_key,self.right)
         base.accept(rightward_key + '-repeat',self.right)
 
+        #_____________________________________________________
 
 
+#Клавіші
 change_mode_key = 'c'
 
 turn_left_key = 'arrow_left'
@@ -191,5 +216,5 @@ backward_key = 's'
 leftward_key = 'a'
 rightward_key = 'd'
 
-
+#___________________________________
 
