@@ -46,7 +46,7 @@ class Hero:
     #_________________________________
 
     #Сама зміна
-    def ChangeNode(self):
+    def ChangeCamera(self):
         if self.cameraOn:
             self.cameraUnBind()
         else:
@@ -81,7 +81,14 @@ class Hero:
         self.hero.setPos(pos)
     #___________________________________
     def try_move(self, angle):
-        pass
+        pos = self.lookAt(angle)
+        if self.land.isEmpty(pos):
+            pos = self.land.findHighestEmpty(pos)
+            self.hero.setPos(pos)
+        else:
+            pos = pos[0], pos[1], pos[2] + 1
+            if self.land.isEmpty(pos):
+                self.hero.setPos(pos)
 
         #Перевірка режиму
     def move_to(self, angle):
@@ -90,6 +97,14 @@ class Hero:
         else:
             self.try_move(angle)
         #_________________________________
+
+    def changeMode(self):
+        #if self.spectatorMode:
+            #self.spectatorMode = False
+        #else:
+            #self.spectatorMode = True
+
+            self.spectatorMode = not self.spectatorMode
         
     
 
@@ -168,11 +183,30 @@ class Hero:
         angle = (self.hero.getH()+ 270) % 360
         self.move_to(angle)
     #__________________________________
+
+    def up(self):
+        #Якщо режим спостерігача
+        if self.spectatorMode:
+            #Отримати поточну z координату гравця
+            pos = self.hero.getZ()
+            #Додати до неї 1
+            pos = pos +1  
+            #Встановити нову x координату
+            self.hero.setZ(pos)
+        # hero = >  getZ ; setZ
+        
+
+    def down(self):
+        if self.spectatorMode:
+            pos = self.hero.getZ()
+            pos = pos - 1
+            self.hero.setZ(pos)
     
 
     #Підключення подій
     def acceptEvents(self):
-        base.accept(change_mode_key, self.ChangeNode)
+        base.accept(change_camera_key, self.ChangeCamera)
+        base.accept(change_mode_key,self.changeMode)
 
         base.accept(turn_left_key,self.turnLeft)
         base.accept(turn_left_key+'-repeat',self.turnLeft)
@@ -199,11 +233,19 @@ class Hero:
         base.accept(rightward_key,self.right)
         base.accept(rightward_key + '-repeat',self.right)
 
+        base.accept(upward_key,self.up)
+        base.accept(upward_key + '-repeat',self.up)
+
+        base.accept(downward_key,self.down)
+        base.accept(downward_key + '-repeat',self.down)
+
+
         #_____________________________________________________
 
 
 #Клавіші
-change_mode_key = 'c'
+change_camera_key = 'c'
+change_mode_key = 'z'
 
 turn_left_key = 'arrow_left'
 turn_right_key = 'arrow_right'
@@ -215,6 +257,9 @@ forward_key = 'w'
 backward_key = 's'
 leftward_key = 'a'
 rightward_key = 'd'
+
+upward_key = 'y'
+downward_key = 'h' 
 
 #___________________________________
 

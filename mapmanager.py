@@ -35,8 +35,9 @@ class MapManager():
         self.block.setColor(color)
 
         self.block.setPos(position)
-
         self.block.reparentTo(self.land)
+
+        self.block.setTag('at' , str(position))
 
     def clear(self):
         self.land.removeNode()
@@ -54,3 +55,18 @@ class MapManager():
                     x += 1
                 y += 1
 
+    def findBlocks(self, pos):
+        return self.land.findAllMatches('=at=' + str(pos))
+
+    def isEmpty(self, pos):
+        blocks: list = self.findBlocks(pos)
+        if blocks:
+            return False
+        return  True
+
+    def findHighestEmpty(self, pos):
+        x,y,z = pos
+        z = 1
+        while not self.isEmpty((x,y,z)):
+            z += 1
+        return (x,y,z) 
